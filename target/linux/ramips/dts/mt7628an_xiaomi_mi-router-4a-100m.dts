@@ -1,113 +1,57 @@
-// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-
-#include "mt7628an_xiaomi_mi-router-4.dtsi"
-
-/ {
-	compatible = "xiaomi,mi-router-4a-100m", "mediatek,mt7628an-soc";
-	model = "Xiaomi Mi Router 4A (100M Edition)";
-
-	aliases {
-		led-boot = &led_power_yellow;
-		led-failsafe = &led_power_yellow;
-		led-running = &led_power_blue;
-		led-upgrade = &led_power_yellow;
-		label-mac-device = &ethernet;
-	};
-
-	leds {
-		compatible = "gpio-leds";
-
-		led_power_blue: power_blue {
-			label = "blue:power";
-			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
-		};
-
-		led_power_yellow: power_yellow {
-			label = "yellow:power";
-			gpios = <&gpio 44 GPIO_ACTIVE_LOW>;
-		};
-
-		wan {
-			label = "blue:wan";
-			gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
-		};
-	};
-
-};
-
-&spi0 {
-	status = "okay";
-
-	flash@0 {
-		compatible = "jedec,spi-nor";
-		reg = <0>;
-		spi-max-frequency = <1000000>;
-
-		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			partition@0 {
-				label = "bootloader";
-				reg = <0x0 0x30000>;
-				read-only;
-			};
-
-			partition@30000 {
-				label = "config";
-				reg = <0x30000 0x10000>;
-				read-only;
-			};
-
-			factory: partition@40000 {
-				compatible = "nvmem-cells";
-				label = "factory";
-				reg = <0x40000 0x10000>;
-				#address-cells = <1>;
-				#size-cells = <1>;
-				read-only;
-
-				eeprom_factory_0: eeprom@0 {
-					reg = <0x0 0x400>;
-				};
-
-				macaddr_factory_28: macaddr@28 {
-					reg = <0x28 0x6>;
-				};
-			};
-
-			partition@50000 {
-				compatible = "denx,uimage";
-				label = "firmware";
-				reg = <0x50000 0xfb0000>;
-			};
-		};
-	};
-};
-
-
-&pcie {
-	status = "okay";
-};
-
-&pcie0 {
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_8000>;
-		nvmem-cell-names = "eeprom";
-		ieee80211-freq-limit = <5000000 6000000>;
-	};
-};
-
-&ethernet {
-	nvmem-cells = <&macaddr_factory_4>;
-	nvmem-cell-names = "mac-address";
-	mac-address-increment = <(-1)>;
-};
-
-&esw {
-	mediatek,portmap = <0x3e>;
-	mediatek,portdisable = <0x2a>;
-};
+diff --git a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
+index 5e146f201..d8746e26c 100644
+--- a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
++++ b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
+@@ -71,25 +71,19 @@
+                                reg = <0x20000 0x10000>;
+                                read-only;
+                        };
+-
+-                       factory: partition@30000 {
+-                               label = "factory";
++                       
++                       partition@30000 {
++                               label = "crash";
+                                reg = <0x30000 0x10000>;
+                                read-only;
+                        };
+ 
+-                       partition@40000 {
+-                               label = "crash";
++                       factory: partition@40000 {
++                               label = "factory";
+                                reg = <0x40000 0x10000>;
+                                read-only;
+                        };
+ 
+-                       partition@50000] {
+-                               label = "cfg_bak";
+-                               reg = <0x50000 0x10000>;
+-                               read-only;
+-                       };
+-
+                        /* additional partitions in DTS */
+                };
+        };
+diff --git a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
+index 37797fc36..3d9f1d75d 100644
+--- a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
++++ b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
+@@ -8,15 +8,9 @@
+ };
+ 
+ &partitions {
+-       partition@60000 {
+-               label = "overlay";
+-               reg = <0x60000 0x100000>;
+-               read-only;
+-       };
+-
+-       partition@160000 {
++       partition@50000 {
+                label = "firmware";
+-               reg = <0x160000 0xea0000>;
++               reg = <0x50000 0xfb0000>;
+                compatible = "denx,uimage";
+        };
+ };
