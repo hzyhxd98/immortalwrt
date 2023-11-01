@@ -1,57 +1,31 @@
-diff --git a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
-index 5e146f201..d8746e26c 100644
---- a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
-+++ b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4.dtsi
-@@ -71,25 +71,19 @@
-                                reg = <0x20000 0x10000>;
-                                read-only;
-                        };
--
--                       factory: partition@30000 {
--                               label = "factory";
-+                       
-+                       partition@30000 {
-+                               label = "crash";
-                                reg = <0x30000 0x10000>;
-                                read-only;
-                        };
- 
--                       partition@40000 {
--                               label = "crash";
-+                       factory: partition@40000 {
-+                               label = "factory";
-                                reg = <0x40000 0x10000>;
-                                read-only;
-                        };
- 
--                       partition@50000] {
--                               label = "cfg_bak";
--                               reg = <0x50000 0x10000>;
--                               read-only;
--                       };
--
-                        /* additional partitions in DTS */
-                };
-        };
-diff --git a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
-index 37797fc36..3d9f1d75d 100644
---- a/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
-+++ b/target/linux/ramips/dts/mt7628an_xiaomi_mi-router-4a-100m.dts
-@@ -8,15 +8,9 @@
- };
- 
- &partitions {
--       partition@60000 {
--               label = "overlay";
--               reg = <0x60000 0x100000>;
--               read-only;
--       };
--
--       partition@160000 {
-+       partition@50000 {
-                label = "firmware";
--               reg = <0x160000 0xea0000>;
-+               reg = <0x50000 0xfb0000>;
-                compatible = "denx,uimage";
-        };
- };
+partitions: partitions {
+             compatible = "fixed-partitions";
+             #address-cells = <1>;
+             #size-cells = <1>;
+
+             partition@0 {
+                 label = "u-boot";
+                 reg = <0x0 0x30000>;
+                 read-only;
+             };
+
+             partition@30000 {
+                 label = "u-boot-env";
+                 reg = <0x30000 0x10000>;
+                 read-only;
+             };
+
+             factory: partition@40000 {
+                 label = "factory";
+                 reg = <0x40000 0x10000>;
+                 read-only;
+             };
+
+             partition@50000 {
+                 label = "firmware";
+                 reg = <0x50000 0xf80000>;            
+                 compatible = "denx,uimage";
+             };            
+             
+             /* additional partitions in DTS */
+         };
