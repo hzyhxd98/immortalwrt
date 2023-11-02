@@ -35,41 +35,34 @@
 
 };
 
-&partitions {
-	partition@60000 {
-		label = "overlay";
-		reg = <0x60000 0x100000>;
-		read-only;
-	};
+partitions: partitions {
+             compatible = "fixed-partitions";
+             #address-cells = <1>;
+             #size-cells = <1>;
 
-	partition@160000 {
-		label = "firmware";
-		reg = <0x160000 0xea0000>;
-		compatible = "denx,uimage";
-	};
-};
+             partition@0 {
+                 label = "u-boot";
+                 reg = <0x0 0x30000>;
+                 read-only;
+             };
 
-&pcie {
-	status = "okay";
-};
+             partition@30000 {
+                 label = "u-boot-env";
+                 reg = <0x30000 0x10000>;
+                 read-only;
+             };
 
-&pcie0 {
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_8000>;
-		nvmem-cell-names = "eeprom";
-		ieee80211-freq-limit = <5000000 6000000>;
-	};
-};
+             factory: partition@40000 {
+                 label = "factory";
+                 reg = <0x40000 0x10000>;
+                 read-only;
+             };
 
-&ethernet {
-	nvmem-cells = <&macaddr_factory_4>;
-	nvmem-cell-names = "mac-address";
-	mac-address-increment = <(-1)>;
-};
-
-&esw {
-	mediatek,portmap = <0x3e>;
-	mediatek,portdisable = <0x2a>;
-};
+             partition@50000 {
+                 label = "firmware";
+                 reg = <0x50000 0xf80000>;            
+                 compatible = "denx,uimage";
+             };            
+            
+             /* additional partitions in DTS */
+         };
