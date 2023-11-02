@@ -36,17 +36,19 @@
 };
 
 &partitions {
-	partition@60000 {
-		label = "overlay";
-		reg = <0x60000 0x100000>;
-		read-only;
-	};
-
-	partition@160000 {
-		label = "firmware";
-		reg = <0x160000 0xea0000>;
-		compatible = "denx,uimage";
-	};
+-       partition@60000 {
+-               label = "overlay";
+-               reg = <0x60000 0x100000>;
+-               read-only;
+-       };
+-
+-       partition@160000 {
++       partition@50000 {
+                label = "firmware";
+-               reg = <0x160000 0xea0000>;
++               reg = <0x50000 0xfb0000>;
+                compatible = "denx,uimage";
+        };
 };
 
 &pcie {
